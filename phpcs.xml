@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<ruleset name="Hulotte-routing">
+    <description>Formatting rules</description>
+
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <file>Hulotte</file>
+    <file>tests</file>
+
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="PSR2">
+        <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
+        <exclude name="PSR2.Namespaces.UseDeclaration.MultipleDeclarations"/>
+    </rule>
+</ruleset>
