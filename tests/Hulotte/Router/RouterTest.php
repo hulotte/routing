@@ -34,7 +34,7 @@ class RouterTest extends TestCase
      */
     public function matchSuccess(): void
     {
-        $this->router->addRoute('/test', 'test', function(){
+        $this->router->addRoute('/test', 'test', function () {
             return 'test success';
         });
 
