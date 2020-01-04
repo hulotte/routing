@@ -53,7 +53,7 @@ class RouterMiddleware implements MiddlewareInterface
         $route = $this->router->match($request);
 
         if ($route === null) {
-            if ($this->notFoundCallable === null){
+            if ($this->notFoundCallable === null) {
                 return new Response(404, [], 'Not found !');
             }
 

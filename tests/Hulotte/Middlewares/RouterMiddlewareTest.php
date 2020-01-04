@@ -108,7 +108,7 @@ class RouterMiddlewareTest extends TestCase
     {
         $this->router->expects($this->once())->method('match')->willReturn(null);
         $middleware = new RouterMiddleware($this->router);
-        $middleware->setNotFoundCallable(function(){
+        $middleware->setNotFoundCallable(function () {
             return 'Oups not found';
         });
         $this->definePath('/test');
