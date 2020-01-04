@@ -69,7 +69,7 @@ class RouterTest extends TestCase
             ->addRoute('/test', 'test', function () {
                 return 'test success';
             })
-            ->addRoute('/blog', 'blog', function(){
+            ->addRoute('/blog', 'blog', function () {
                 return 'Je suis sur le blog';
             });
 
@@ -92,7 +92,7 @@ class RouterTest extends TestCase
         $this->router->addRoute('/test', 'test', function () {
             return 'test success';
         });
-        $this->router->addRoute('/blog', 'blog', function(){
+        $this->router->addRoute('/blog', 'blog', function () {
             return 'Je suis sur le blog';
         });
 
