@@ -100,6 +100,47 @@ class RouterMiddlewareTest extends TestCase
         $this->assertSame(301, $result->getStatusCode());
     }
 
+    /**
+     * @covers \Hulotte\Middlewares\RouterMiddleware::process
+     * @test
+     */
+    public function processWithNotFoundCallable(): void
+    {
+        $this->router->expects($this->once())->method('match')->willReturn(null);
+        $middleware = new RouterMiddleware($this->router);
+        $middleware->setNotFoundCallable(function(){
+            return 'Oups not found';
+        });
+        $this->definePath('/test');
+
+        $result = $middleware->process(
+            $this->serverRequest,
+            $this->createMock(RequestHandlerInterface::class)
+        );
+
+        $this->assertSame(404, $result->getStatusCode());
+        $this->assertSame('Oups not found', $result->getBody()->getContents());
+    }
+
+    /**
+     * @covers \Hulotte\Middlewares\RouterMiddleware::process
+     * @test
+     */
+    public function processWithoutNotFoundCallable(): void
+    {
+        $this->router->expects($this->once())->method('match')->willReturn(null);
+        $middleware = new RouterMiddleware($this->router);
+        $this->definePath('/test');
+
+        $result = $middleware->process(
+            $this->serverRequest,
+            $this->createMock(RequestHandlerInterface::class)
+        );
+
+        $this->assertSame(404, $result->getStatusCode());
+        $this->assertSame('Not found !', $result->getBody()->getContents());
+    }
+
     protected function setUp(): void
     {
         $this->router = $this->createMock(Router::class);
