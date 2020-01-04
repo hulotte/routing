@@ -21,10 +21,13 @@ class Router
      * @param string $path
      * @param string $name
      * @param callable $callable
+     * @return Router
      */
-    public function addRoute(string $path, string $name, callable $callable): void
+    public function addRoute(string $path, string $name, callable $callable): self
     {
         $this->routes[] = new Route($path, $name, $callable);
+
+        return $this;
     }
 
     /**

@@ -19,6 +19,11 @@ use Psr\Http\{
 class RouterMiddleware implements MiddlewareInterface
 {
     /**
+     * @var null|callable
+     */
+    private $notFoundCallable = null;
+
+    /**
      * @var Router
      */
     private $router;
@@ -48,11 +53,23 @@ class RouterMiddleware implements MiddlewareInterface
         $route = $this->router->match($request);
 
         if ($route === null) {
-            return new Response(404, [], 'Not found !');
+            if ($this->notFoundCallable === null) {
+                return new Response(404, [], 'Not found !');
+            }
+
+            return new Response(404, [], call_user_func_array($this->notFoundCallable, [$request]));
         }
 
         $callback = $route->getCallable();
 
         return new Response(200, [], call_user_func_array($callback, [$request]));
+    }
+
+    /**
+     * @param callable $callable
+     */
+    public function setNotFoundCallable(callable $callable): void
+    {
+        $this->notFoundCallable = $callable;
     }
 }
