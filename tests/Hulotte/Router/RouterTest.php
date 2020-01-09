@@ -8,7 +8,11 @@ use Hulotte\Router\{
     Router
 };
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\{RequestInterface, ServerRequestInterface, UriInterface};
+use Psr\Http\Message\{
+    RequestInterface,
+    ServerRequestInterface,
+    UriInterface
+};
 
 /**
  * Class RouterTest
@@ -18,11 +22,6 @@ use Psr\Http\Message\{RequestInterface, ServerRequestInterface, UriInterface};
  */
 class RouterTest extends TestCase
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    private $request;
-
     /**
      * @var Router
      */
@@ -34,16 +33,17 @@ class RouterTest extends TestCase
      */
     public function matchSuccess(): void
     {
-        $this->router = new Router();
+        $request = $this->getRequest('/test');
+
         $this->router->addRoute('/test', 'test', function () {
-            return 'test success';
+            return 'Test success';
         });
 
-        $result = $this->router->match($this->request);
+        $result = $this->router->match($request);
 
         $this->assertInstanceOf(Route::class, $result);
         $this->assertSame('test', $result->getName());
-        $this->assertSame('test success', call_user_func_array($result->getCallable(), [$this->request]));
+        $this->assertSame('Test success', call_user_func_array($result->getCallable(), [$request]));
     }
 
     /**
@@ -52,8 +52,8 @@ class RouterTest extends TestCase
      */
     public function matchFail(): void
     {
-        $this->router = new Router();
-        $result = $this->router->match($this->request);
+        $request = $this->getRequest('/test');
+        $result = $this->router->match($request);
 
         $this->assertNull($result);
     }
@@ -64,7 +64,6 @@ class RouterTest extends TestCase
      */
     public function matchSuccessWithAddRouteFluent(): void
     {
-        $this->router = new Router();
         $this->router
             ->addRoute('/test', 'test', function () {
                 return 'test success';
@@ -73,13 +72,16 @@ class RouterTest extends TestCase
                 return 'Je suis sur le blog';
             });
 
-        $result = $this->router->match($this->request);
-        $result2 = $this->router->match($this->defineRequest('/blog'));
+        $request = $this->getRequest('/test');
+        $request2 = $this->getRequest('/blog');
+
+        $result = $this->router->match($request);
+        $result2 = $this->router->match($request2);
 
         $this->assertSame('test', $result->getName());
-        $this->assertSame('test success', call_user_func_array($result->getCallable(), [$this->request]));
+        $this->assertSame('test success', call_user_func_array($result->getCallable(), [$request]));
         $this->assertSame('blog', $result2->getName());
-        $this->assertSame('Je suis sur le blog', call_user_func_array($result2->getCallable(), [$this->request]));
+        $this->assertSame('Je suis sur le blog', call_user_func_array($result2->getCallable(), [$request2]));
     }
 
     /**
@@ -88,7 +90,6 @@ class RouterTest extends TestCase
      */
     public function matchSuccessWithAddRouteNotFluent(): void
     {
-        $this->router = new Router();
         $this->router->addRoute('/test', 'test', function () {
             return 'test success';
         });
@@ -96,25 +97,24 @@ class RouterTest extends TestCase
             return 'Je suis sur le blog';
         });
 
-        $result = $this->router->match($this->request);
-        $result2 = $this->router->match($this->defineRequest('/blog'));
+        $request = $this->getRequest('/test');
+        $request2 = $this->getRequest('/blog');
+
+        $result = $this->router->match($request);
+        $result2 = $this->router->match($request2);
 
         $this->assertSame('test', $result->getName());
-        $this->assertSame('test success', call_user_func_array($result->getCallable(), [$this->request]));
+        $this->assertSame('test success', call_user_func_array($result->getCallable(), [$request]));
         $this->assertSame('blog', $result2->getName());
-        $this->assertSame('Je suis sur le blog', call_user_func_array($result2->getCallable(), [$this->request]));
+        $this->assertSame('Je suis sur le blog', call_user_func_array($result2->getCallable(), [$request2]));
     }
 
     protected function setUp(): void
     {
-        $this->request = $this->defineRequest('/test');
+        $this->router = new Router();
     }
 
-    /**
-     * @param string $path
-     * @return RequestInterface
-     */
-    private function defineRequest(string $path): RequestInterface
+    private function getRequest(string $path): ServerRequestInterface
     {
         $uriInterface = $this->createMock(UriInterface::class);
         $uriInterface->expects($this->once())->method('getPath')->willReturn($path);
