@@ -17,6 +17,11 @@ class Route
     /**
      * @var string
      */
+    private $method;
+
+    /**
+     * @var null|string
+     */
     private $name;
 
     /**
@@ -27,14 +32,16 @@ class Route
     /**
      * Route constructor.
      * @param string $path
-     * @param string $name
+     * @param null|string $name
      * @param callable $callable
+     * @param string $method
      */
-    public function __construct(string $path, string $name, callable $callable)
+    public function __construct(string $path, ?string $name, callable $callable, string $method)
     {
         $this->path = $path;
         $this->name = $name;
         $this->callable = $callable;
+        $this->method = $method;
     }
 
     /**
@@ -48,7 +55,15 @@ class Route
     /**
      * @return string
      */
-    public function getName(): string
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getName(): ?string
     {
         return $this->name;
     }

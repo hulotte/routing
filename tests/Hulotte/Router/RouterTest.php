@@ -109,17 +109,46 @@ class RouterTest extends TestCase
         $this->assertSame('Je suis sur le blog', call_user_func_array($result2->getCallable(), [$request2]));
     }
 
+    /**
+     * @covers \Hulotte\Router\Router::match
+     * @test
+     */
+    public function matchSuccessWithMethod(): void
+    {
+        $this->router
+            ->addRoute('/test', 'test', function () {
+                return 'Test Get Success';
+            })
+            ->addRoute('/test', null, function () {
+                return 'Test Post Success';
+            }, 'POST');
+
+        $requestGet = $this->getRequest('/test');
+        $requestPost = $this->getRequest('/test', 'POST');
+
+        $resultGet = $this->router->match($requestGet);
+        $resultPost = $this->router->match($requestPost);
+
+        $this->assertSame('GET', $resultGet->getMethod());
+        $this->assertSame('POST', $resultPost->getMethod());
+        $this->assertSame('test', $resultGet->getName());
+        $this->assertNull($resultPost->getName());
+        $this->assertSame('Test Get Success', call_user_func_array($resultGet->getCallable(), [$requestGet]));
+        $this->assertSame('Test Post Success', call_user_func_array($resultPost->getCallable(), [$requestPost]));
+    }
+
     protected function setUp(): void
     {
         $this->router = new Router();
     }
 
-    private function getRequest(string $path): ServerRequestInterface
+    private function getRequest(string $path, string $method = 'GET'): ServerRequestInterface
     {
         $uriInterface = $this->createMock(UriInterface::class);
         $uriInterface->expects($this->once())->method('getPath')->willReturn($path);
         $request = $this->createMock(ServerRequest::class);
         $request->expects($this->once())->method('getUri')->willReturn($uriInterface);
+        $request->expects($this->once())->method('getMethod')->willReturn($method);
 
         return $request;
     }

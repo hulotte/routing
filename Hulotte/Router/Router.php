@@ -19,13 +19,14 @@ class Router
     /**
      * Add new Route
      * @param string $path
-     * @param string $name
+     * @param null|string $name
      * @param callable $callable
+     * @param string $method
      * @return Router
      */
-    public function addRoute(string $path, string $name, callable $callable): self
+    public function addRoute(string $path, ?string $name, callable $callable, string $method = 'GET'): self
     {
-        $this->routes[] = new Route($path, $name, $callable);
+        $this->routes[] = new Route($path, $name, $callable, $method);
 
         return $this;
     }
@@ -38,9 +39,10 @@ class Router
     public function match(ServerRequestInterface $request): ?Route
     {
         $url = $request->getUri()->getPath();
+        $method = $request->getMethod();
 
         foreach ($this->routes as $route) {
-            if ($url === $route->getPath()) {
+            if ($url === $route->getPath() && $method === $route->getMethod()) {
                 return $route;
             }
         }
