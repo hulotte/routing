@@ -30,6 +30,16 @@ class Route
     private $path;
 
     /**
+     * @var string
+     */
+    private $pathRegex;
+
+    /**
+     * @var null|array
+     */
+    private $regexes;
+
+    /**
      * Route constructor.
      * @param string $path
      * @param null|string $name
@@ -42,6 +52,51 @@ class Route
         $this->name = $name;
         $this->callable = $callable;
         $this->method = $method;
+
+        $this->extractRegexes();
+    }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    public function comparePath(string $path): bool
+    {
+        if (preg_match('#' . $this->pathRegex . '#', $path)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function extractRegexes(): void
+    {
+        $regex = '#{.*}#';
+
+        if (preg_match($regex, $this->path)) {
+            $urlParts = explode('/', $this->path);
+
+            if ($urlParts[0] === '') {
+                unset($urlParts[0]);
+            }
+
+            foreach ($urlParts as $urlPart) {
+                $this->pathRegex .= '/';
+
+                if (preg_match($regex, $urlPart, $matches)) {
+                    $parts = str_replace('{', '', $matches[0]);
+                    $parts = str_replace('}', '', $parts);
+                    $parts = explode(':', $parts);
+
+                    $this->regexes[$parts[0]] = $parts[1];
+                    $this->pathRegex .= $parts[1];
+                } else {
+                    $this->pathRegex .= $urlPart;
+                }
+            }
+        } else {
+            $this->pathRegex = $this->path;
+        }
     }
 
     /**
@@ -74,5 +129,21 @@ class Route
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathRegex(): string
+    {
+        return $this->pathRegex;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getRegexes(): ?array
+    {
+        return $this->regexes;
     }
 }

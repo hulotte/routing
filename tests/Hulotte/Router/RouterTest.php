@@ -137,6 +137,24 @@ class RouterTest extends TestCase
         $this->assertSame('Test Post Success', call_user_func_array($resultPost->getCallable(), [$requestPost]));
     }
 
+    /**
+     * @covers \Hulotte\Router\Router::match
+     * @test
+     */
+    public function matchSuccessWithParams(): void
+    {
+        $request = $this->getRequest('/article/8/mon-super-article');
+
+        $this->router->addRoute('/article/{id:\d+}/{slug:[a-z-]*}', 'article.details', function () {
+            return 'Test success';
+        });
+
+        $result = $this->router->match($request);
+
+        $this->assertSame('article.details', $result->getName());
+        $this->assertSame('Test success', call_user_func_array($result->getCallable(), [$request]));
+    }
+
     protected function setUp(): void
     {
         $this->router = new Router();

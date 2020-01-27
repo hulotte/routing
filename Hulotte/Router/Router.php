@@ -42,7 +42,7 @@ class Router
         $method = $request->getMethod();
 
         foreach ($this->routes as $route) {
-            if ($url === $route->getPath() && $method === $route->getMethod()) {
+            if ($route->comparePath($url) && $method === $route->getMethod()) {
                 return $route;
             }
         }
