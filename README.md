@@ -14,7 +14,7 @@ $ composer require hulotte/routing
 Instanciate the Router class :
 
 ```php
-$router = new \Hulotte\Router\Router();
+$router = new \Hulotte\Routing\Router();
 ```
 
 Add routes with addRoute method. The necessary parameters are : a path, a name 
