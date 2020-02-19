@@ -3,38 +3,36 @@
 namespace Hulotte\Middlewares;
 
 use GuzzleHttp\Psr7\Response;
-use Hulotte\Router\Router;
-use Psr\Http\{
-    Message\ResponseInterface,
-    Message\ServerRequestInterface,
-    Server\MiddlewareInterface,
-    Server\RequestHandlerInterface
-};
+use Hulotte\Routing\Dispatcher;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Class RouterMiddleware
- * @author Sébastien CLEMENT<s.clement@la-taniere.net>
+ * Class RoutingMiddleware
+ * @author Sébastien CLEMENT <s.clement@la-taniere.net>
  * @package Hulotte\Middlewares
  */
-class RouterMiddleware implements MiddlewareInterface
+class RoutingMiddleware implements MiddlewareInterface
 {
     /**
-     * @var null|callable
+     * @var Dispatcher
      */
-    private $notFoundCallable = null;
+    private $dispatcher;
 
     /**
-     * @var Router
+     * @var callable
      */
-    private $router;
+    private $notFoundCallable;
 
     /**
-     * RouterMiddleware constructor.
-     * @param Router $router
+     * RoutingMiddleware constructor.
+     * @param Dispatcher $dispatcher
      */
-    public function __construct(Router $router)
+    public function __construct(Dispatcher $dispatcher)
     {
-        $this->router = $router;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -50,7 +48,7 @@ class RouterMiddleware implements MiddlewareInterface
             return new Response(301, ['Location' => substr($url, 0, -1)]);
         }
 
-        $route = $this->router->match($request);
+        $route = $this->dispatcher->match($request);
 
         if ($route === null) {
             if ($this->notFoundCallable === null) {
@@ -60,9 +58,16 @@ class RouterMiddleware implements MiddlewareInterface
             return new Response(404, [], call_user_func_array($this->notFoundCallable, [$request]));
         }
 
-        $callback = $route->getCallable();
+        $callable = $route->getCallable();
+        $params = $route->getParams();
 
-        return new Response(200, [], call_user_func_array($callback, [$request]));
+        if ($params) {
+            foreach ($params as $key => $value) {
+                $request = $request->withAttribute($key, $value);
+            }
+        }
+
+        return new Response(200, [], call_user_func_array($callable, [$request]));
     }
 
     /**
