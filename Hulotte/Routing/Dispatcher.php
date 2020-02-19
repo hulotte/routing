@@ -76,11 +76,14 @@ class Dispatcher
         if ($route->getRegexes() !== null) {
             $routePath = explode('/', $route->getPath());
             $urlPath = explode('/', $url);
-            $flipRegexes = array_flip($route->getRegexes());
+            $regexes = $route->getRegexes();
 
             foreach ($urlPath as $key => $pathPart) {
-                if (isset($flipRegexes[$routePath[$key]])) {
-                    $route->addParam($flipRegexes[$routePath[$key]], $pathPart);
+                if (in_array($routePath[$key], $regexes)) {
+                    $arrayKey = array_key_first($regexes);
+                    array_shift($regexes);
+
+                    $route->addParam($arrayKey, $pathPart);
                 }
             }
         }

@@ -120,6 +120,22 @@ class DispatcherTest extends TestCase
         $this->assertSame('Test', call_user_func_array($result->getCallable(), [$request]));
     }
 
+    /**
+     * @covers \Hulotte\Routing\Dispatcher::match
+     * @test
+     */
+    public function matchWithSameRegex(): void
+    {
+        $request = $this->getRequest('/article/8/10');
+        $this->dispatcher->addRoute('/article/{id:\d+}/{nbr:\d+}', 'article.details', function () {
+            return 'Test';
+        });
+        $result = $this->dispatcher->match($request);
+
+        $this->assertSame(['id' => '8', 'nbr' => '10'], $result->getParams());
+        $this->assertSame('Test', call_user_func_array($result->getCallable(), [$request]));
+    }
+
     protected function setUp(): void
     {
         $this->dispatcher = new Dispatcher();
