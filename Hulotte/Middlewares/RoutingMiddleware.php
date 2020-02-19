@@ -59,6 +59,13 @@ class RoutingMiddleware implements MiddlewareInterface
         }
 
         $callable = $route->getCallable();
+        $params = $route->getParams();
+
+        if ($params) {
+            foreach ($params as $key => $value) {
+                $request = $request->withAttribute($key, $value);
+            }
+        }
 
         return new Response(200, [], call_user_func_array($callable, [$request]));
     }

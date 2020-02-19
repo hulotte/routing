@@ -2,6 +2,7 @@
 
 namespace tests\Hulotte\Middlewares;
 
+use GuzzleHttp\Psr7\ServerRequest;
 use Hulotte\Middlewares\RoutingMiddleware;
 use Hulotte\Routing\Dispatcher;
 use Hulotte\Routing\Route;
@@ -127,6 +128,21 @@ class RoutingMiddlewareTest extends TestCase
 
         $this->assertSame(404, $result->getStatusCode());
         $this->assertSame('Not found !', $result->getBody()->getContents());
+    }
+
+    /**
+     * @covers \Hulotte\Middlewares\RoutingMiddleware::process
+     * @test
+     */
+    public function processWithParams(): void
+    {
+        $this->definePath('/test/8');
+        $this->serverRequest->expects($this->once())->method('withAttribute')->willReturn($this->serverRequest);
+        $this->route->expects($this->once())->method('getParams')->willReturn(['id' => 8]);
+        $this->dispatcher->expects($this->once())->method('match')->willReturn($this->route);
+        $middleware = new RoutingMiddleware($this->dispatcher);
+
+        $middleware->process($this->serverRequest, $this->handler);
     }
 
     protected function setUp(): void
