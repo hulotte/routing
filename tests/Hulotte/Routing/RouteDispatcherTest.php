@@ -136,6 +136,22 @@ class RouteDispatcherTest extends TestCase
         $this->assertSame('Test', call_user_func_array($result->getCallable(), [$request]));
     }
 
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::match
+     * @test
+     */
+    public function matchFail(): void
+    {
+        $request = $this->getRequest('/article/8');
+        $this->dispatcher
+            ->addRoute('/article', 'article.all', function () {
+                return 'Article';
+            });
+        $result = $this->dispatcher->match($request);
+
+        $this->assertNull($result);
+    }
+
     protected function setUp(): void
     {
         $this->dispatcher = new RouteDispatcher();

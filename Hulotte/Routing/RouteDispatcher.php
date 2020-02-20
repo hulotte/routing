@@ -55,7 +55,7 @@ class RouteDispatcher
 
         if ($this->routes) {
             foreach ($this->routes as $route) {
-                if (preg_match('#' . $route->getPath() . '#', $url) && $method === $route->getMethod()) {
+                if (preg_match('#^' . $route->getPath() . '$#', $url) && $method === $route->getMethod()) {
                     $route = $this->extractParams($route, $url);
 
                     return $route;
