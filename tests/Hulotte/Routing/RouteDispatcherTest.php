@@ -18,7 +18,7 @@ use Psr\Http\Message\{
  * @covers \Hulotte\Routing\RouteDispatcher
  * @package tests\Hulotte\Routing
  */
-class DispatcherTest extends TestCase
+class RouteDispatcherTest extends TestCase
 {
     /**
      * @var RouteDispatcher
