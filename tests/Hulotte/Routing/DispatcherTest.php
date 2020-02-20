@@ -3,7 +3,7 @@
 namespace tests\Hulotte\Routing;
 
 use Hulotte\Routing\{
-    Dispatcher,
+    RouteDispatcher,
     Route
 };
 use PHPUnit\Framework\TestCase;
@@ -15,18 +15,18 @@ use Psr\Http\Message\{
 /**
  * Class DispatcherTest
  * @author Sébastien CLEMENT <s.clement@la-taniere.net>
- * @covers \Hulotte\Routing\Dispatcher
+ * @covers \Hulotte\Routing\RouteDispatcher
  * @package tests\Hulotte\Routing
  */
 class DispatcherTest extends TestCase
 {
     /**
-     * @var Dispatcher
+     * @var RouteDispatcher
      */
     private $dispatcher;
 
     /**
-     * @covers \Hulotte\Routing\Dispatcher::getRoutes
+     * @covers \Hulotte\Routing\RouteDispatcher::getRoutes
      * @test
      */
     public function getRoutesNull(): void
@@ -35,7 +35,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @covers \Hulotte\Routing\Dispatcher::addRoute
+     * @covers \Hulotte\Routing\RouteDispatcher::addRoute
      * @test
      */
     public function addRoute(): void
@@ -61,7 +61,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @covers \Hulotte\Routing\Dispatcher::match
+     * @covers \Hulotte\Routing\RouteDispatcher::match
      * @test
      */
     public function matchNull(): void
@@ -72,7 +72,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @covers \Hulotte\Routing\Dispatcher::match
+     * @covers \Hulotte\Routing\RouteDispatcher::match
      * @test
      */
     public function matchSimple(): void
@@ -90,7 +90,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @covers \Hulotte\Routing\Dispatcher::match
+     * @covers \Hulotte\Routing\RouteDispatcher::match
      * @test
      */
     public function matchWithParam(): void
@@ -105,7 +105,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @covers \Hulotte\Routing\Dispatcher::match
+     * @covers \Hulotte\Routing\RouteDispatcher::match
      * @test
      */
     public function matchWithManyParams(): void
@@ -121,7 +121,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @covers \Hulotte\Routing\Dispatcher::match
+     * @covers \Hulotte\Routing\RouteDispatcher::match
      * @test
      */
     public function matchWithSameRegex(): void
@@ -138,7 +138,7 @@ class DispatcherTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dispatcher = new Dispatcher();
+        $this->dispatcher = new RouteDispatcher();
     }
 
     /**

@@ -2,16 +2,21 @@
 
 namespace tests\Hulotte\Middlewares;
 
-use GuzzleHttp\Psr7\ServerRequest;
-use Hulotte\Middlewares\RoutingMiddleware;
-use Hulotte\Routing\Dispatcher;
-use Hulotte\Routing\Route;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Hulotte\{
+    Middlewares\RoutingMiddleware,
+    Routing\RouteDispatcher,
+    Routing\Route
+};
+use PHPUnit\Framework\{
+    MockObject\MockObject,
+    TestCase
+};
+use Psr\Http\{
+    Message\ResponseInterface,
+    Message\ServerRequestInterface,
+    Message\UriInterface,
+    Server\RequestHandlerInterface
+};
 
 /**
  * Class RoutingMiddlewareTest
@@ -22,7 +27,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class RoutingMiddlewareTest extends TestCase
 {
     /**
-     * @var Dispatcher|MockObject
+     * @var RouteDispatcher|MockObject
      */
     private $dispatcher;
 
@@ -147,7 +152,7 @@ class RoutingMiddlewareTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dispatcher = $this->createMock(Dispatcher::class);
+        $this->dispatcher = $this->createMock(RouteDispatcher::class);
         $this->route = $this->createMock(Route::class);
         $this->serverRequest = $this->createMock(ServerRequestInterface::class);
         $this->uriInterface = $this->createMock(UriInterface::class);

@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @author Sébastien CLEMENT <s.clement@la-taniere.net>
  * @package Hulotte\Routing
  */
-class Dispatcher
+class RouteDispatcher
 {
     /**
      * @var Route[]|null
