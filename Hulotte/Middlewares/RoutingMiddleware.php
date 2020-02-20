@@ -3,11 +3,13 @@
 namespace Hulotte\Middlewares;
 
 use GuzzleHttp\Psr7\Response;
-use Hulotte\Routing\Dispatcher;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Hulotte\Routing\RouteDispatcher;
+use Psr\Http\{
+    Message\ResponseInterface,
+    Message\ServerRequestInterface,
+    Server\MiddlewareInterface,
+    Server\RequestHandlerInterface
+};
 
 /**
  * Class RoutingMiddleware
@@ -17,7 +19,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class RoutingMiddleware implements MiddlewareInterface
 {
     /**
-     * @var Dispatcher
+     * @var RouteDispatcher
      */
     private $dispatcher;
 
@@ -28,9 +30,9 @@ class RoutingMiddleware implements MiddlewareInterface
 
     /**
      * RoutingMiddleware constructor.
-     * @param Dispatcher $dispatcher
+     * @param RouteDispatcher $dispatcher
      */
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct(RouteDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }

@@ -11,10 +11,10 @@ $ composer require hulotte/routing
 ```
 
 ## How to declare routes ?
-Instanciate the Dispatcher class
+Instanciate the RouteDispatcher class
 
 ```php
-$dispatcher = new \Hulotte\Routing\Dispatcher();
+$dispatcher = new \Hulotte\Routing\RouteDispatcher();
 ```
 
 Add routes with addRoute method. The necessary parameters are : a path, a name 
@@ -61,7 +61,7 @@ $dispatcher->addRoute('/article/{id:\d+}/{slug:[a-z-]*}', 'accueil', function(Se
 ```
 
 ## How to use routing system ?
-When routes are declared there's to way to use Hulotte Routing :
+When routes are declared there's two ways to use Hulotte Routing :
 
 ### Manuel method
 Example of use :
@@ -86,7 +86,7 @@ A RouterMiddleware class is available. This middleware erase ending slash on url
 with a 301 redirection, return a 404 error if the route does not exists and create
 response.
 
-It's necessary to instanciate Dispatcher and define routes before use the middleware.
+It's necessary to instanciate RouteDispatcher and define routes before use the middleware.
 
 ```php
 new \Hulotte\Middlewares\RoutingMiddleware($dispatcher);
