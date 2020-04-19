@@ -2,6 +2,7 @@
 
 namespace Hulotte\Routing;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -34,6 +35,43 @@ class RouteDispatcher
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param array|null $params
+     * @return string
+     * @throws Exception
+     */
+    public function generateUri(string $name, array $params = null): string
+    {
+        if ($this->routes === null) {
+            throw new Exception('Aucune route disponible.');
+        }
+
+        $findRoute = null;
+
+        foreach ($this->routes as $route) {
+            if ($route->getName() === $name) {
+                $findRoute = $route;
+            }
+        }
+
+        if ($findRoute === null) {
+            throw new Exception('La route "' . $name . '" n\'existe pas.');
+        }
+
+        $path = $findRoute->getPath();
+
+        if ($params) {
+            foreach ($findRoute->getRegexes() as $key => $regex) {
+                if (isset($params[$key])) {
+                    $path = str_replace($regex, $params[$key], $path);
+                }
+            }
+        }
+
+        return $path;
     }
 
     /**
