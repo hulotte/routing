@@ -152,6 +152,71 @@ class RouteDispatcherTest extends TestCase
         $this->assertNull($result);
     }
 
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::generateUri
+     * @test
+     */
+    public function generateUri(): void
+    {
+        $this->dispatcher->addRoute('/article', 'article.all', function () {
+            return 'Article';
+        });
+        $result = $this->dispatcher->generateUri('article.all');
+
+        $this->assertSame('/article', $result);
+    }
+
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::generateUri
+     * @test
+     */
+    public function generateUriFailWithoutRoute(): void
+    {
+        $this->expectException(\Exception::class);
+        $this->dispatcher->generateUri('test');
+    }
+
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::generateUri
+     * @test
+     */
+    public function generateUriFail(): void
+    {
+        $this->dispatcher->addRoute('/article', 'article.all', function () {
+            return 'Article';
+        });
+        $this->expectException(\Exception::class);
+        $this->dispatcher->generateUri('test');
+    }
+
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::generateUri
+     * @test
+     */
+    public function generateUriWithParam(): void
+    {
+        $this->dispatcher->addRoute('/article/{id:\d+}', 'article.detail', function () {
+            return 'Article';
+        });
+        $result = $this->dispatcher->generateUri('article.detail', ['id' => 8]);
+
+        $this->assertSame('/article/8', $result);
+    }
+
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::generateUri
+     * @test
+     */
+    public function generateUriWithManyParam(): void
+    {
+        $this->dispatcher->addRoute('/article/{id:\d+}/{slug:[a-z-]*}', 'article.detail', function () {
+            return 'Article';
+        });
+        $result = $this->dispatcher->generateUri('article.detail', ['id' => 8, 'slug' => 'coucou']);
+
+        $this->assertSame('/article/8/coucou', $result);
+    }
+
     protected function setUp(): void
     {
         $this->dispatcher = new RouteDispatcher();
