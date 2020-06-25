@@ -21,7 +21,7 @@ class RoutingMiddleware implements MiddlewareInterface
     /**
      * @var RouteDispatcher
      */
-    private $dispatcher;
+    private RouteDispatcher $dispatcher;
 
     /**
      * @var callable

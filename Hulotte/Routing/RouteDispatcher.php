@@ -15,7 +15,15 @@ class RouteDispatcher
     /**
      * @var Route[]|null
      */
-    private $routes;
+    private ?array $routes;
+
+    /**
+     * RouteDispatcher constructor
+     */
+    public function __construct()
+    {
+        $this->routes = null;
+    }
 
     /**
      * @param string $path
