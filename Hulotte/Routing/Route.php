@@ -17,27 +17,27 @@ class Route
     /**
      * @var string
      */
-    private $method;
+    private string $method;
 
     /**
      * @var string|null
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @var array|null
      */
-    private $params;
+    private ?array $params;
 
     /**
      * @var string
      */
-    private $path;
+    private string $path;
 
     /**
      * @var array|null
      */
-    private $regexes;
+    private ?array $regexes;
 
     /**
      * Route constructor.
@@ -52,6 +52,7 @@ class Route
         $this->name = $name;
         $this->callable = $callable;
         $this->method = $method;
+        $this->regexes = null;
     }
 
     /**
