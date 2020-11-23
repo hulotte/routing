@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "name": "hulotte/routing",
     "require": {
-        "php": "7.4.0",
+        "php": "^7.4.0",
         "guzzlehttp/psr7": "dev-master",
         "psr/http-server-handler": "1.0.1",
         "psr/http-server-middleware": "1.0.1"
