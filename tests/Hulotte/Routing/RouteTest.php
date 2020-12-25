@@ -16,7 +16,7 @@ class RouteTest extends TestCase
     /**
      * @var Route
      */
-    private $route;
+    private Route $route;
 
     /**
      * @covers \Hulotte\Routing\Route::addRegex

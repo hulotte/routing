@@ -7,10 +7,7 @@ use Hulotte\{
     Routing\RouteDispatcher,
     Routing\Route
 };
-use PHPUnit\Framework\{
-    MockObject\MockObject,
-    TestCase
-};
+use PHPUnit\Framework\TestCase;
 use Psr\Http\{
     Message\ResponseInterface,
     Message\ServerRequestInterface,
@@ -27,29 +24,29 @@ use Psr\Http\{
 class RoutingMiddlewareTest extends TestCase
 {
     /**
-     * @var RouteDispatcher|MockObject
+     * @var RouteDispatcher
      */
-    private $dispatcher;
+    private RouteDispatcher $dispatcher;
 
     /**
-     * @var MockObject|RequestHandlerInterface
+     * @var RequestHandlerInterface
      */
-    private $handler;
+    private RequestHandlerInterface $handler;
 
     /**
-     * @var Route|MockObject
+     * @var Route
      */
-    private $route;
+    private Route $route;
 
     /**
-     * @var MockObject|ServerRequestInterface
+     * @var ServerRequestInterface
      */
-    private $serverRequest;
+    private ServerRequestInterface $serverRequest;
 
     /**
-     * @var MockObject|UriInterface
+     * @var UriInterface
      */
-    private $uriInterface;
+    private UriInterface $uriInterface;
 
     /**
      * @covers \Hulotte\Middlewares\RoutingMiddleware::process

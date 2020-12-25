@@ -13,16 +13,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class RouteDispatcher
 {
     /**
-     * @var Route[]|null
-     */
-    private ?array $routes;
-
-    /**
      * RouteDispatcher constructor
+     * @param null|Route[]
      */
-    public function __construct()
+    public function __construct(private ?array $routes = null)
     {
-        $this->routes = null;
     }
 
     /**

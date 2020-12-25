@@ -23,7 +23,7 @@ class RouteDispatcherTest extends TestCase
     /**
      * @var RouteDispatcher
      */
-    private $dispatcher;
+    private RouteDispatcher $dispatcher;
 
     /**
      * @covers \Hulotte\Routing\RouteDispatcher::getRoutes
