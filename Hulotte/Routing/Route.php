@@ -10,29 +10,9 @@ namespace Hulotte\Routing;
 class Route
 {
     /**
-     * @var callable
-     */
-    private $callable;
-
-    /**
-     * @var string
-     */
-    private string $method;
-
-    /**
-     * @var string|null
-     */
-    private ?string $name;
-
-    /**
      * @var array|null
      */
     private ?array $params;
-
-    /**
-     * @var string
-     */
-    private string $path;
 
     /**
      * @var array|null
@@ -46,12 +26,12 @@ class Route
      * @param callable $callable
      * @param string $method
      */
-    public function __construct(string $path, ?string $name, callable $callable, string $method)
-    {
-        $this->path = $path;
-        $this->name = $name;
-        $this->callable = $callable;
-        $this->method = $method;
+    public function __construct(
+        private string $path,
+        private ?string $name,
+        private $callable,
+        private string $method
+    ) {
         $this->regexes = null;
     }
 
