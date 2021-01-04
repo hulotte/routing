@@ -32,6 +32,7 @@ class Route
         private $callable,
         private string $method
     ) {
+        $this->params = null;
         $this->regexes = null;
     }
 
