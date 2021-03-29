@@ -23,18 +23,18 @@ class RouteDispatcher
     /**
      * @param string $path
      * @param string|null $name
-     * @param callable $callable
+     * @param mixed $callback
      * @param string|array $methods
      * @return $this
      */
-    public function addRoute(string $path, ?string $name, callable $callable, $methods = 'GET'): self
+    public function addRoute(string $path, ?string $name, mixed $callback, $methods = 'GET'): self
     {
         if (is_array($methods)) {
             foreach ($methods as $method) {
-                $this->routes[] = $this->parse(new Route($path, $name, $callable, $method));
+                $this->routes[] = $this->parse(new Route($path, $name, $callback, $method));
             }
         } else {
-            $this->routes[] = $this->parse(new Route($path, $name, $callable, $methods));
+            $this->routes[] = $this->parse(new Route($path, $name, $callback, $methods));
         }
 
         return $this;

@@ -11,6 +11,8 @@ use Psr\Http\Message\{
     ServerRequestInterface,
     UriInterface
 };
+use tests\FakeClass\Hulotte\ControllerInvoke;
+use tests\FakeClass\Hulotte\ControllerMethod;
 
 /**
  * Class DispatcherTest
@@ -86,7 +88,7 @@ class RouteDispatcherTest extends TestCase
         $this->assertInstanceOf(Route::class, $result);
         $this->assertSame('/test', $result->getPath());
         $this->assertSame('test', $result->getName());
-        $this->assertSame('Test', call_user_func_array($result->getCallable(), [$request]));
+        $this->assertSame('Test', call_user_func_array($result->getCallback(), [$request]));
     }
 
     /**
@@ -117,7 +119,7 @@ class RouteDispatcherTest extends TestCase
         $result = $this->dispatcher->match($request);
 
         $this->assertSame(['id' => '8', 'slug' => 'mon-super-titre'], $result->getParams());
-        $this->assertSame('Test', call_user_func_array($result->getCallable(), [$request]));
+        $this->assertSame('Test', call_user_func_array($result->getCallback(), [$request]));
     }
 
     /**
@@ -133,7 +135,7 @@ class RouteDispatcherTest extends TestCase
         $result = $this->dispatcher->match($request);
 
         $this->assertSame(['id' => '8', 'nbr' => '10'], $result->getParams());
-        $this->assertSame('Test', call_user_func_array($result->getCallable(), [$request]));
+        $this->assertSame('Test', call_user_func_array($result->getCallback(), [$request]));
     }
 
     /**
@@ -150,6 +152,38 @@ class RouteDispatcherTest extends TestCase
         $result = $this->dispatcher->match($request);
 
         $this->assertNull($result);
+    }
+
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::match
+     * @test
+     */
+    public function matchWithControllerInvoke():void
+    {
+        $request = $this->getRequest('/test');
+        $this->dispatcher->addRoute('/test', 'theMethod', new ControllerInvoke());
+        $result = $this->dispatcher->match($request);
+
+        $this->assertInstanceOf(Route::class, $result);
+        $this->assertSame('/test', $result->getPath());
+        $this->assertSame('theMethod', $result->getName());
+        $this->assertSame('Test', call_user_func_array($result->getCallback(), [$request]));
+    }
+
+    /**
+     * @covers \Hulotte\Routing\RouteDispatcher::match
+     * @test
+     */
+    public function matchWithControllerMethod(): void
+    {
+        $request = $this->getRequest('/test');
+        $this->dispatcher->addRoute('/test', 'theMethod', new ControllerMethod());
+        $result = $this->dispatcher->match($request);
+
+        $this->assertInstanceOf(Route::class, $result);
+        $this->assertSame('/test', $result->getPath());
+        $this->assertSame('theMethod', $result->getName());
+        $this->assertSame('Test', call_user_func_array([$result->getCallback(), $result->getName()], [$request]));
     }
 
     /**
