@@ -24,9 +24,9 @@ class RoutingMiddleware implements MiddlewareInterface
     private RouteDispatcher $dispatcher;
 
     /**
-     * @var callable
+     * @var mixed
      */
-    private $notFoundCallable;
+    private mixed $notFoundCallback;
 
     /**
      * RoutingMiddleware constructor.
@@ -35,6 +35,7 @@ class RoutingMiddleware implements MiddlewareInterface
     public function __construct(RouteDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
+        $this->notFoundCallback = null;
     }
 
     /**
@@ -53,14 +54,14 @@ class RoutingMiddleware implements MiddlewareInterface
         $route = $this->dispatcher->match($request);
 
         if ($route === null) {
-            if ($this->notFoundCallable === null) {
+            if ($this->notFoundCallback === null) {
                 return new Response(404, [], 'Not found !');
             }
 
-            return new Response(404, [], call_user_func_array($this->notFoundCallable, [$request]));
+            return $this->createNotFoundResponse($this->notFoundCallback, $request, 'notFoundCallback', 404);
         }
 
-        $callable = $route->getCallable();
+        $callback = $route->getCallback();
         $params = $route->getParams();
 
         if ($params) {
@@ -69,14 +70,34 @@ class RoutingMiddleware implements MiddlewareInterface
             }
         }
 
-        return new Response(200, [], call_user_func_array($callable, [$request]));
+        return $this->createNotFoundResponse($callback, $request, $route->getName());
     }
 
     /**
-     * @param callable $callable
+     * @param mixed $callback
      */
-    public function setNotFoundCallable(callable $callable): void
+    public function setNotFoundCallback(mixed $callback): void
     {
-        $this->notFoundCallable = $callable;
+        $this->notFoundCallback = $callback;
+    }
+
+    /**
+     * @param mixed $callback
+     * @param ServerRequestInterface $request
+     * @param null|string $routeName
+     * @param int $status
+     * @return ResponseInterface
+     */
+    private function createNotFoundResponse(
+        mixed $callback,
+        ServerRequestInterface $request,
+        ?string $routeName = null,
+        int $status = 200
+    ): ResponseInterface {
+        if (is_callable($callback)) {
+            return new Response($status, [], call_user_func_array($callback, [$request]));
+        }
+
+        return new Response($status, [], call_user_func_array([$callback, $routeName], [$request]));
     }
 }

@@ -23,13 +23,13 @@ class Route
      * Route constructor.
      * @param string $path
      * @param string|null $name
-     * @param callable $callable
+     * @param mixed $callback
      * @param string $method
      */
     public function __construct(
         private string $path,
         private ?string $name,
-        private $callable,
+        private mixed $callback,
         private string $method
     ) {
         $this->params = null;
@@ -57,9 +57,9 @@ class Route
     /**
      * @return callable
      */
-    public function getCallable(): callable
+    public function getCallback(): mixed
     {
-        return $this->callable;
+        return $this->callback;
     }
 
     /**

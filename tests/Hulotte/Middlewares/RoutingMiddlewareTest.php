@@ -14,6 +14,8 @@ use Psr\Http\{
     Message\UriInterface,
     Server\RequestHandlerInterface
 };
+use tests\FakeClass\Hulotte\ControllerInvoke;
+use tests\FakeClass\Hulotte\ControllerMethod;
 
 /**
  * Class RoutingMiddlewareTest
@@ -54,7 +56,7 @@ class RoutingMiddlewareTest extends TestCase
      */
     public function processSuccess(): void
     {
-        $this->route->expects($this->once())->method('getCallable')->willReturn(function () {
+        $this->route->expects($this->once())->method('getCallback')->willReturn(function () {
             return 'Test';
         });
         $this->dispatcher->expects($this->once())->method('match')->willReturn($this->route);
@@ -101,11 +103,11 @@ class RoutingMiddlewareTest extends TestCase
      * @covers \Hulotte\Middlewares\RoutingMiddleware::process
      * @test
      */
-    public function processWithNotFoundCallable(): void
+    public function processWithNotFoundCallback(): void
     {
         $this->dispatcher->expects($this->once())->method('match')->willReturn(null);
         $middleware = new RoutingMiddleware($this->dispatcher);
-        $middleware->setNotFoundCallable(function () {
+        $middleware->setNotFoundCallback(function () {
             return 'Oups not found';
         });
         $this->definePath('/test');
@@ -141,10 +143,50 @@ class RoutingMiddlewareTest extends TestCase
         $this->definePath('/test/8');
         $this->serverRequest->expects($this->once())->method('withAttribute')->willReturn($this->serverRequest);
         $this->route->expects($this->once())->method('getParams')->willReturn(['id' => 8]);
+        $this->route->expects($this->once())->method('getCallback')->willReturn(function () {
+            return 'Test';
+        });
         $this->dispatcher->expects($this->once())->method('match')->willReturn($this->route);
         $middleware = new RoutingMiddleware($this->dispatcher);
 
         $middleware->process($this->serverRequest, $this->handler);
+    }
+
+    /**
+     * @covers \Hulotte\Middlewares\RoutingMiddleware::process
+     * @test
+     */
+    public function processWithControllerInvoke(): void
+    {
+        $this->route->expects($this->once())->method('getCallback')->willReturn(new ControllerInvoke());
+        $this->dispatcher->expects($this->once())->method('match')->willReturn($this->route);
+        $middleware = new RoutingMiddleware($this->dispatcher);
+        $this->definePath('/test');
+
+        $result = $middleware->process($this->serverRequest, $this->handler);
+
+        $this->assertInstanceOf(ResponseInterface::class, $result);
+        $this->assertSame(200, $result->getStatusCode());
+        $this->assertSame('Test', $result->getBody()->getContents());
+    }
+
+    /**
+     * @covers \Hulotte\Middlewares\RoutingMiddleware::process
+     * @test
+     */
+    public function processWithControllerMethod(): void
+    {
+        $this->route->expects($this->once())->method('getCallback')->willReturn(new ControllerMethod());
+        $this->route->expects($this->once())->method('getName')->willReturn('theMethod');
+        $this->dispatcher->expects($this->once())->method('match')->willReturn($this->route);
+        $middleware = new RoutingMiddleware($this->dispatcher);
+        $this->definePath('/test');
+
+        $result = $middleware->process($this->serverRequest, $this->handler);
+
+        $this->assertInstanceOf(ResponseInterface::class, $result);
+        $this->assertSame(200, $result->getStatusCode());
+        $this->assertSame('Test', $result->getBody()->getContents());
     }
 
     protected function setUp(): void
