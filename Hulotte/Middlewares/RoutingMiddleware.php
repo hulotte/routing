@@ -93,8 +93,7 @@ class RoutingMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         ?string $routeName = null,
         int $status = 200
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         if (is_callable($callback)) {
             return new Response($status, [], call_user_func_array($callback, [$request]));
         }
