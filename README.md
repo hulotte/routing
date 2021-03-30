@@ -81,6 +81,35 @@ $callable = $route->getCallable();
 return new Response(200, [], call_user_func_array($callable, [$request]));
 ```
 
+### Using class for callback
+You can use a class or a class method as a callback.
+
+If you want to use a class per route :
+```php
+class MyClass 
+{
+    public function __invoke(ServerRequestInterface $request)
+    {
+        return 'Hello World';
+    }
+}
+
+Return New Response(200, [], call_user_func_array(new MyClass(), [$request]));
+```
+
+Or if you want to use a class method as a callback :
+```php
+class MyClass 
+{
+    public function myMethod(ServerRequestInterface $request)
+    {
+        return 'Hello World';
+    }
+}
+
+Return New Response(200, [], call_user_func_array([new MyClass(), 'myMethod'], [$request]));
+```
+
 ### Middleware
 A RouterMiddleware class is available. This middleware erase ending slash on url 
 with a 301 redirection, return a 404 error if the route does not exists and create
@@ -100,3 +129,10 @@ $routingMiddleware->setNotFoundCallable(function(){
     return 'Oups, not found !';
 });
 ```
+
+#### Important !
+If you use a class method as callback with the middleware, the name of the route must be
+the same as the name of the class.
+
+Ditto if you define a class method for notFoundCallable, the class method name must be 
+'notFoundCallable'.
